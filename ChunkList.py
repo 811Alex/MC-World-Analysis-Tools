@@ -13,9 +13,9 @@ processed_region_files = 0
 def parse_args():
     parser = ArgumentParser(description='List chunks stored in the region (Anvil) files that exist in a directory.\nBy default, it lists fully generated chunks.', formatter_class=RawDescriptionHelpFormatter)
     parser.add_argument('regionpath', type=Path, help='Directory containing the region files to read (or a single region file).')
-    parser.add_argument('--status', type=str, default='full', help='Chunk status filter (RegEx), by default "full".')
-    parser.add_argument('--print-status', action='store_true', default=False, help='Also print each chunk\'s status.')
-    parser.add_argument('--output-file', nargs='?', type=FileType('w'), default=stdout, help='Output data to a file instead of stdout.')
+    parser.add_argument('-s', '--status', type=str, default='full', help='Chunk status filter (RegEx), by default "full".')
+    parser.add_argument('-p', '--print-status', action='store_true', default=False, help='Also print each chunk\'s status.')
+    parser.add_argument('-o', '--output-file', nargs='?', type=FileType('w'), default=stdout, help='Output data to a file instead of stdout.')
     args = parser.parse_args()
     return args
 

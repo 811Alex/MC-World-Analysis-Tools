@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
+from Util.Print import *
 from anvil import Region
 from re import search
-from sys import stdout, stderr
+from sys import stdout
 from pathlib import Path
 from argparse import ArgumentParser, RawDescriptionHelpFormatter, FileType
 
-max_reprint_len = 0
 total_region_files = 0
 processed_region_files = 0
 
@@ -97,27 +97,19 @@ def print_valid_chunk(chunk, output_file, output_is_file, status, print_status, 
             else:
                 reprint('Processing: ' + region_filename)
 
-def reprint(val):
-    global max_reprint_len
-    print('\r' + val.ljust(max_reprint_len, ' '), end='')
-    if len(val) > max_reprint_len:
-        max_reprint_len = len(val)
-
-def error(err):
-    print(err, file=stderr)
-
 def main():
     args = parse_args()
+    regionpath = args.regionpath
     output_file = args.output_file
     output_is_file = output_file and output_file != stdout
     if output_is_file:
         print('Writting to file: ' + output_file.name)
     consumer = lambda chunk, region_filename: print_valid_chunk(chunk, output_file, output_is_file, args.status, args.print_status, region_filename)
-    if args.regionpath.is_dir():
-        if not for_each_chunk(args.regionpath, consumer, True):
+    if regionpath.is_dir():
+        if not for_each_chunk(regionpath, consumer, True):
             error('No .mca files found in this directory.')
-    elif args.regionpath.is_file():
-        if not for_each_chunk_in_region(args.regionpath, consumer, True):
+    elif regionpath.is_file():
+        if not for_each_chunk_in_region(regionpath, consumer, True):
             error('The file is not .mca')
     else:
         error('Unknown region path.')

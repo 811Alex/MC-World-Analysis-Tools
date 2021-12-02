@@ -98,17 +98,21 @@ def main():
     if output_is_file:
         print('Writting to file: ' + output_file.name)
     consumer = lambda player, playerdata_filename: print_player(player, output_file, output_is_file, not args.no_uuid, args.name, args.position, playerdata_filename)
-    if playerdatapath.is_dir():
-        if not for_each_playerdata(playerdatapath, consumer, args.name):
-            error('No .dat files found in this directory.')
-    elif playerdatapath.is_file():
-        if not with_playerdata(playerdatapath, consumer):
-            error('The file is not .dat')
-    else:
-        error('Unknown playerdata path.')
-    if output_is_file:
-        output_file.close()
-        print('\nDone!')
+    try:
+        if playerdatapath.is_dir():
+            if not for_each_playerdata(playerdatapath, consumer, args.name):
+                error('No .dat files found in this directory.')
+        elif playerdatapath.is_file():
+            if not with_playerdata(playerdatapath, consumer):
+                error('The file is not .dat')
+        else:
+            error('Unknown playerdata path.')
+    except Exception as ex:
+        raise Exception(ex)
+    finally:
+        if output_is_file:
+            output_file.close()
+            print('\nDone!')
 
 if __name__ == '__main__':
     main()

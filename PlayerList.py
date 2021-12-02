@@ -56,7 +56,7 @@ def get_uuid(player):
     return None
 
 def get_name(uuid):
-    if uuid.int < 16**16:
+    if is_xuid(uuid):
         return '<floodgate>', False
     else:
         resp = get(ENDPOINT_UUID_TO_NAME + uuid.hex)

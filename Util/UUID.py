@@ -8,3 +8,9 @@ def ints_to_uuid(nums):
     for i in nums:
         bytes += to_bytes(i)
     return UUID(bytes=bytes)
+
+def is_xuid(uuid):
+    return uuid.int < 16**16
+
+def get_xuid(uuid):
+    return uuid.hex.replace('-', '')[16:]

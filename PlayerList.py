@@ -6,7 +6,7 @@ from nbt import nbt
 from time import sleep
 from requests import get
 from json import loads as parse_json
-from sys import stdout, stderr
+from sys import stdout
 from pathlib import Path
 from argparse import ArgumentParser, RawDescriptionHelpFormatter, FileType
 
@@ -41,8 +41,6 @@ def for_each_playerdata(playerdatadir, consumer, slow_down = False):
         for f in playerdatadir.glob('*.dat'):
             processed_playerdata_files += 1
             with_playerdata(f, consumer)
-            if slow_down and processed_playerdata_files != total_playerdata_files:
-                sleep(API_REQUEST_DELAY)   # to take it easy on the API
         return True
     return False
 
@@ -56,10 +54,13 @@ def get_uuid(player):
     return None
 
 def get_name(uuid):
+    global ENDPOINT_UUID_TO_NAME, API_REQUEST_DELAY, total_playerdata_files, processed_playerdata_files
     if is_xuid(uuid):
         return '<floodgate>', False
     else:
         resp = get(ENDPOINT_UUID_TO_NAME + uuid.hex)
+        if processed_playerdata_files != total_playerdata_files:
+            sleep(API_REQUEST_DELAY)   # to take it easy on the API
         if resp.status_code == 200:
             return parse_json(resp.text)['name'], True
         else:
